@@ -1,0 +1,146 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace FinalProjectConnect4
+{
+    public partial class VsRobot : Form
+    {
+        Board getboard;
+        bool player1Turn = true;
+        public VsRobot()
+        {
+            InitializeComponent();
+            getboard = new Board();
+            setupboard();
+            //getboard.getcell(0, 5).getButton().BackColor = Color.Green;
+            //the above line doesnt matter, I included this so you two can know how to pull a specific point, 
+            //each button is individually named so in the instance you need to know a specific point check names
+        }
+        public void setupboard()
+        {
+            string name;
+            char delim = '_';
+            int posDelim;
+            int col;
+            int row;
+            Cell c;
+            foreach (var button in this.Controls.OfType<Button>())
+            {
+                button.Click += OnCellClick;
+                button.MouseEnter += CellShowPreview;
+                button.MouseLeave += CellClearPreview;
+
+                name = button.Name;
+                posDelim = name.IndexOf(delim);
+                row = Int32.Parse(name.Substring(posDelim + 1, 1));
+                name = name.Substring(posDelim + 2);
+                posDelim = name.IndexOf(delim);
+                col = Int32.Parse(name.Substring(posDelim + 1));
+
+                c = new Cell(row, col, button);
+
+                getboard.setgameboard(c);
+                //this finds each button and stores them for get button
+                //if you touch this program please let me know any changes
+            }
+        }
+        private void VsRobot_Load(object sender, EventArgs e)
+        {
+
+        }
+        public void revertButtonColor(object sender, EventArgs e)
+        {
+            foreach (var button in this.Controls.OfType<Button>())
+            {
+                button.BackColor = Color.White;
+            }
+        }
+
+        private void HandleMove(Button clickedButton)
+        {
+            int lastUnderscore = clickedButton.Name.LastIndexOf('_');
+            int col = Int32.Parse(clickedButton.Name.Substring(lastUnderscore + 1));
+                bool moveWasLegal = getboard.DropPiece(col, 1);
+                if (moveWasLegal)
+                {
+                    int winner = getboard.CheckForWin();
+                    if (winner != 0)
+                    {
+                        MessageBox.Show("Player " + winner + " wins!");
+                    }
+                }
+                Random rnd = new Random();
+                int column = rnd.Next(0, 7);
+                bool aimove = getboard.DropPiece(column, 2);
+                if (aimove)
+                {
+                    int winner = getboard.CheckForWin();
+                    if (winner != 0)
+                    {
+                        MessageBox.Show("Player " + winner + " wins!");
+                    }
+                }
+                player1Turn = true;
+        }
+
+        private void OnCellClick(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+
+            HandleMove(btn);
+        }
+
+        private void CellShowPreview(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+
+            movePreview(btn);
+        }
+
+        private void CellClearPreview(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+
+            clearPreview(btn);
+        }
+
+        private void movePreview(Button clickedButton)
+        {
+            int lastUnderscore = clickedButton.Name.LastIndexOf('_');
+            int col = Int32.Parse(clickedButton.Name.Substring(lastUnderscore + 1));
+
+            bool ShowPreview = true;
+
+            if (ShowPreview == true && player1Turn == true)
+            {
+                getboard.ShowPreview(col, 1);
+                //ShowPreview = false;
+            }
+            else
+            {
+                getboard.ShowPreview(col, 2);
+            }
+        }
+
+        private void clearPreview(Button clickedButton)
+        {
+            int lastUnderscore = clickedButton.Name.LastIndexOf('_');
+            int col = Int32.Parse(clickedButton.Name.Substring(lastUnderscore + 1));
+
+            bool ClearPreview = true;
+
+            if (ClearPreview == true)
+            {
+                getboard.ClearStatusAndColor(col);
+            }
+        }
+    }
+
+}
