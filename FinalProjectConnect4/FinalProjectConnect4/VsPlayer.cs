@@ -10,13 +10,12 @@ using System.Windows.Forms;
 
 namespace FinalProjectConnect4
 {
-    public partial class VsRobot : Form
+    public partial class VsPlayer : Form
     {
-        Board getboard;
         bool player1Turn = true;
-        int playermoves = 0;
-        int column;
-        public VsRobot()
+        bool player2Turn = false;
+        Board getboard;
+        public VsPlayer()
         {
             InitializeComponent();
             getboard = new Board();
@@ -24,6 +23,7 @@ namespace FinalProjectConnect4
             //getboard.getcell(0, 5).getButton().BackColor = Color.Green;
             //the above line doesnt matter, I included this so you two can know how to pull a specific point, 
             //each button is individually named so in the instance you need to know a specific point check names
+
         }
         public void setupboard()
         {
@@ -53,10 +53,11 @@ namespace FinalProjectConnect4
                 //if you touch this program please let me know any changes
             }
         }
-        private void VsRobot_Load(object sender, EventArgs e)
+        private void VsPlayer_Load(object sender, EventArgs e)
         {
 
         }
+
         public void revertButtonColor(object sender, EventArgs e)
         {
             foreach (var button in this.Controls.OfType<Button>())
@@ -69,7 +70,11 @@ namespace FinalProjectConnect4
         {
             int lastUnderscore = clickedButton.Name.LastIndexOf('_');
             int col = Int32.Parse(clickedButton.Name.Substring(lastUnderscore + 1));
+            if (player1Turn == true)
+            {
                 bool moveWasLegal = getboard.DropPiece(col, 1);
+                player1Turn = false;
+                player2Turn = true;
                 if (moveWasLegal)
                 {
                     int winner = getboard.CheckForWin();
@@ -78,15 +83,13 @@ namespace FinalProjectConnect4
                         MessageBox.Show("Player " + winner + " wins!");
                     }
                 }
-                
-                //bool aimove = getboard.DropPiece(column, 2);
-                if (playermoves==0)
-                {
-                Random rnd = new Random();
-
-                int column = rnd.Next(0, 6);
-                bool aimove = getboard.DropPiece(column, 2);
-                if (aimove)
+            }
+            else if (player2Turn == true)
+            {
+                bool moveWasLegal = getboard.DropPiece(col, 2);
+                player2Turn = false;
+                player1Turn = true;
+                if (moveWasLegal)
                 {
                     int winner = getboard.CheckForWin();
                     if (winner != 0)
@@ -94,72 +97,7 @@ namespace FinalProjectConnect4
                         MessageBox.Show("Player " + winner + " wins!");
                     }
                 }
-            } 
-                if (getboard.getcell(column, 5).getButton().BackColor==Color.Red)
-            {
-                if (column==0)
-                {
-                    column = 1;
-                    bool aimove = getboard.DropPiece(column, 2);
-                    if (aimove)
-                    {
-                        int winner = getboard.CheckForWin();
-                        if (winner != 0)
-                        {
-                            MessageBox.Show("Player " + winner + " wins!");
-                        }
-                    }
-                }
-                if (column==6)
-                {
-                    column = 5;
-                    bool aimove = getboard.DropPiece(column, 2);
-                    if (aimove)
-                    {
-                        int winner = getboard.CheckForWin();
-                        if (winner != 0)
-                        {
-                            MessageBox.Show("Player " + winner + " wins!");
-                        }
-                    }
-                }
-                else
-                {
-                    bool aimove = getboard.DropPiece(column, 2);
-                    if (aimove)
-                    {
-                        int winner = getboard.CheckForWin();
-                        if (winner != 0)
-                        {
-                            MessageBox.Show("Player " + winner + " wins!");
-                        }
-                    }
-                }
             }
-            //    if (getboard.getcell(column, 5).getButton().BackColor==Color.red)
-            //{
-            //    if (column==0)
-            //    {
-            //        bool aimove = getboard.DropPiece(column+1, 2);
-            //    }
-            //    else if (column==6)
-            //    {
-            //        bool aimove = getboard.DropPiece(column-1, 2);
-            //    }
-            //    else
-            //    {
-            //        bool aimove = getboard.DropPiece(column, 2);
-            //    }
-            //}
-            //if (aimove)
-            //{
-            //    int winner = getboard.CheckForWin();
-            //    if (winner != 0)
-            //    {
-            //        MessageBox.Show("Player " + winner + " wins!");
-            //    }
-            //}
-            //player1Turn = true;
         }
 
         private void OnCellClick(object sender, EventArgs e)
@@ -214,5 +152,4 @@ namespace FinalProjectConnect4
             }
         }
     }
-
 }

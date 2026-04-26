@@ -16,5 +16,34 @@ namespace FinalProjectConnect4
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SinglePlayer_Click(object sender, EventArgs e)
+        {
+            VsRobot robform = new VsRobot();
+            robform.Show();
+            this.Hide();
+        }
+
+        private void VsPlayer_Click(object sender, EventArgs e)
+        {
+            VsPlayer playform = new VsPlayer();
+            playform.Show();
+            this.Hide();
+        }
+
+        private void Statistics_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            System.Environment.Exit(0);
+        }
     }
 }
